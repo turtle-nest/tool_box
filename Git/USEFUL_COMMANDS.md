@@ -1,7 +1,3 @@
-Bien sûr ! Voici la version mise à jour avec l'ajout de l'annulation du dernier commit :
-
----
-
 # Guide de Manipulation de Git et des Commits
 
 Ce guide fournit une liste de commandes Git utiles pour la gestion des versions de votre projet. Git est un outil de contrôle de version distribué qui permet de suivre les modifications de votre code et de collaborer avec d'autres développeurs.
