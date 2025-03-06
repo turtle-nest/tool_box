@@ -193,3 +193,49 @@ SELECT User, Host FROM mysql.user;
 ```
 
 ---
+La commande `source` en MySQL est très pratique pour exécuter un script SQL directement depuis le terminal MySQL. Elle est souvent utilisée pour importer des bases de données ou exécuter des séries de commandes enregistrées dans un fichier.  
+
+**Syntaxe** :  
+```sql
+source /chemin/vers/le/fichier.sql;
+```
+
+**Exemple d’utilisation** :  
+Imaginons que tu as un fichier `init_db.sql` avec des commandes SQL comme la création de tables ou l’insertion de données :  
+```sql
+-- init_db.sql
+CREATE DATABASE IF NOT EXISTS test_db;
+USE test_db;
+
+CREATE TABLE utilisateurs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(50),
+    email VARCHAR(100)
+);
+
+INSERT INTO utilisateurs (nom, email) VALUES
+('Alice', 'alice@example.com'),
+('Bob', 'bob@example.com');
+```
+
+Pour exécuter ce script depuis MySQL :  
+```bash
+mysql -u root -p
+```
+Puis dans le terminal MySQL :  
+```sql
+source /home/user/scripts/init_db.sql;
+```
+
+**Résultat** :  
+- La base de données `test_db` est créée (si elle n’existe pas).  
+- La table `utilisateurs` est créée.  
+- Les données sont insérées.  
+
+**Quelques remarques** :  
+- Le chemin peut être absolu ou relatif.  
+- Il faut être connecté à MySQL via le terminal (`mysql`), la commande ne fonctionne pas en dehors.  
+- Tu peux utiliser `source` pour exécuter des fichiers de sauvegarde SQL (`mysqldump`), comme :  
+```sql
+source /home/user/backups/sauvegarde.sql;
+```
