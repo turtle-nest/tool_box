@@ -239,3 +239,8 @@ source /home/user/scripts/init_db.sql;
 ```sql
 source /home/user/backups/sauvegarde.sql;
 ```
+---
+Voici comment vous pouvez exécuter votre fichier SQL avec MySQL :
+```sql
+mysql -u votre_utilisateur -p votre_base_de_données < /Users/file.sql
+```
