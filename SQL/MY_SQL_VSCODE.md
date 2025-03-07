@@ -26,6 +26,6 @@ Pour des guides détaillés sur l'utilisation de cette extension, vous pouvez co
 
 - Présentation de MySQL Shell et Visual Studio Code :
 
-- Article détaillé sur l'exécution de SQL dans Visual Studio Code avec MySQL Shell for VS Code :
+- Article détaillé sur l'exécution de SQL dans Visual Studio Code avec MySQL Shell for VS Code : https://blog.shevarezo.fr/post/2022/03/25/executer-sql-visual-studio-code-extension?utm_source=chatgpt.com
 
 Ces ressources vous aideront à tirer pleinement parti de l'extension pour gérer efficacement vos bases de données MySQL directement depuis Visual Studio Code. 
