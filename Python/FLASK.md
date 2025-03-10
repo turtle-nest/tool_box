@@ -1,21 +1,21 @@
-**Flask : Présentation et Utilisations** 🚀  
+**Flask : Présentation et Utilisations** 🚀
 
 ---
 
-### **1. Qu'est-ce que Flask ?**  
+### **1. Qu'est-ce que Flask ?**
 
-Flask est un micro-framework web écrit en Python. "Micro" ne signifie pas qu'il est limité en fonctionnalités, mais plutôt qu'il est léger et minimaliste, laissant à l'utilisateur la liberté d'ajouter uniquement les extensions nécessaires à son projet.  
+Flask est un micro-framework web écrit en Python. "Micro" ne signifie pas qu'il est limité en fonctionnalités, mais plutôt qu'il est léger et minimaliste, laissant à l'utilisateur la liberté d'ajouter uniquement les extensions nécessaires à son projet.
 
-📌 **Caractéristiques principales :**  
-- **Léger et flexible** : parfait pour les API REST ou les petites applications.  
-- **Facile à apprendre** : syntaxe simple et lisible.  
-- **Extensible** : supporte des extensions comme SQLAlchemy (ORM), Flask-JWT-Extended (authentification JWT), et bien d'autres.  
-- **Compatible avec Jinja2** : moteur de templates puissant.  
-- **Bonne documentation** et large communauté.  
+📌 **Caractéristiques principales :**
+- **Léger et flexible** : parfait pour les API REST ou les petites applications.
+- **Facile à apprendre** : syntaxe simple et lisible.
+- **Extensible** : supporte des extensions comme SQLAlchemy (ORM), Flask-JWT-Extended (authentification JWT), et bien d'autres.
+- **Compatible avec Jinja2** : moteur de templates puissant.
+- **Bonne documentation** et large communauté.
 
 ---
 
-### **2. Installation de Flask**  
+### **2. Installation de Flask**
 
 ```bash
 pip install Flask
@@ -23,15 +23,15 @@ pip install Flask
 
 ---
 
-### **3. Premier projet Flask**  
+### **3. Premier projet Flask**
 
-**Structure du projet :**  
+**Structure du projet :**
 ```
 my_flask_app/
 |-- app.py
 ```
 
-**app.py :**  
+**app.py :**
 ```python
 from flask import Flask
 
@@ -45,140 +45,118 @@ if __name__ == '__main__':
     app.run(debug=True)
 ```
 
-**Lancer l’application :**  
+**Lancer l’application :**
 ```bash
 python app.py
 ```
 
-Accède à l'URL **http://127.0.0.1:5000/** et tu verras "Hello, Flask!". 🚀  
+Accède à l'URL **http://127.0.0.1:5000/** et tu verras "Hello, Flask!". 🚀
 
 ---
 
-### **4. Routes et paramètres**  
+### **4. Le pattern Application Factory**
 
-**Route avec paramètre dynamique :**  
-```python
-@app.route('/user/<username>')
-def greet_user(username):
-    return f"Hello, {username}!"
-```
+Le pattern Application Factory est une bonne pratique dans Flask. Il consiste à créer une fonction qui configure et retourne une instance de l'application Flask.
 
-Accède à **http://127.0.0.1:5000/user/Alice** ➡️ "Hello, Alice!"  
+📌 **Avantages :**
+- **Modularité** : Facile de créer des versions différentes de l'application (développement, test, production).
+- **Testabilité** : On peut créer une nouvelle instance propre pour chaque test.
+- **Organisation propre** : Configuration, routes et extensions sont mieux organisées.
 
----
-
-### **5. Méthodes HTTP (GET, POST, PUT, DELETE)**  
-
-```python
-from flask import request, jsonify
-
-@app.route('/user', methods=['POST'])
-def create_user():
-    data = request.json
-    return jsonify({"message": f"User {data['name']} created!"}), 201
-```
-
-Requête POST avec JSON :  
-```bash
-curl -X POST http://127.0.0.1:5000/user \
--H "Content-Type: application/json" \
--d '{"name": "Alice"}'
-```
-
----
-
-### **6. Templates HTML avec Jinja2**  
-
-**Structure :**  
+**Structure modulaire :**
 ```
 my_flask_app/
-|-- app.py
-|-- templates/
-    |-- home.html
+|-- app/
+|   |-- __init__.py           # Application factory
+|   |-- models.py             # SQLAlchemy models
+|   |-- routes.py             # Routes de l'application
+|   |-- config.py             # Configuration
+|-- run.py                    # Point d'entrée de l'application
 ```
 
-**home.html :**  
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Flask App</title>
-</head>
-<body>
-    <h1>Welcome, {{ username }}!</h1>
-</body>
-</html>
-```
-
-**app.py :**  
+**Exemple de configuration (app/config.py)**
 ```python
-from flask import render_template
+class Config:
+    SECRET_KEY = 'supersecretkey'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///users.db'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-@app.route('/welcome/<username>')
-def welcome(username):
-    return render_template('home.html', username=username)
+class DevelopmentConfig(Config):
+    DEBUG = True
+
+class ProductionConfig(Config):
+    DEBUG = False
 ```
 
----
-
-### **7. Flask avec SQLAlchemy (Base de données)**  
-
-**Installation :**  
-```bash
-pip install Flask-SQLAlchemy
-```
-
-**app.py :**  
+**Application Factory (app/__init__.py)**
 ```python
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import JWTManager
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
-db = SQLAlchemy(app)
+db = SQLAlchemy()
+jwt = JWTManager()
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), nullable=False)
+def create_app(config_class='app.config.DevelopmentConfig'):
+    app = Flask(__name__)
+    app.config.from_object(config_class)
 
-db.create_all()
+    db.init_app(app)
+    jwt.init_app(app)
+
+    from app.routes import main
+    app.register_blueprint(main)
+
+    with app.app_context():
+        db.create_all()
+
+    return app
 ```
 
----
-
-### **8. Authentification avec JWT (Flask-JWT-Extended)**  
-
-**Installation :**  
-```bash
-pip install Flask-JWT-Extended
-```
-
-**app.py :**  
+**Point d'entrée (run.py)**
 ```python
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from app import create_app
 
-app.config['JWT_SECRET_KEY'] = 'supersecretkey'
-jwt = JWTManager(app)
+app = create_app()
 
-@app.route('/login', methods=['POST'])
-def login():
-    username = request.json.get('username')
-    access_token = create_access_token(identity=username)
-    return jsonify(access_token=access_token)
-
-@app.route('/protected', methods=['GET'])
-@jwt_required()
-def protected():
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user)
+if __name__ == '__main__':
+    app.run()
 ```
 
 ---
 
-### **9. Conclusion**  
+### **5. Commandes pour tester**
 
-Flask est un framework ultra flexible et adapté pour :  
-- Construire des **API RESTful**.  
-- Créer des **interfaces web** avec des templates HTML.  
-- Gérer l’**authentification** avec JWT.  
-- Interagir avec des bases de données via **SQLAlchemy**.  
+**Lancer l'application :**
+```bash
+python run.py
+```
 
-Tu veux qu’on aille plus loin avec un projet complet Flask (comme une API CRUD avec JWT et SQLAlchemy) ? Dis-moi ! 🚀  
+**Créer un utilisateur :**
+```bash
+curl -X POST http://127.0.0.1:5000/register \
+-H "Content-Type: application/json" \
+-d '{"username": "alice", "email": "alice@example.com"}'
+```
+
+**Se connecter et récupérer un token :**
+```bash
+curl -X POST http://127.0.0.1:5000/login \
+-H "Content-Type: application/json" \
+-d '{"username": "alice"}'
+```
+
+**Accéder à une route protégée :**
+```bash
+curl -H "Authorization: Bearer <your_token_here>" \
+http://127.0.0.1:5000/protected
+```
+
+---
+
+### **6. Conclusion**
+
+Cette documentation présente les bases de Flask, ainsi qu'une structure modulaire avancée avec l'application factory. Cela permet d'obtenir une application plus claire, extensible et facile à maintenir.
+
+Prochaine étape : Ajouter des tests unitaires ou des validations avec Flask-WTF ou Marshmallow ? Dis-moi ! 🚀
+
