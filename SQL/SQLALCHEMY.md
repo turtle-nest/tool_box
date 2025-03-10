@@ -1,3 +1,5 @@
+# SQLAlchemy (intro)
+
 SQLAlchemy est une bibliothèque Python open-source qui fournit un ensemble d'outils SQL et un mapper relationnel objet (ORM) pour interagir avec des bases de données relationnelles. Elle permet aux développeurs de travailler avec des bases de données en utilisant des objets Python, offrant ainsi un accès aux données à la fois efficace et flexible.
 
 L'API déclarative de SQLAlchemy simplifie la définition des modèles en combinant la définition des tables et le mapping des classes en une seule étape. Cette approche permet de définir des classes Python qui sont directement liées aux tables de la base de données, rendant le code plus lisible et maintenable.
