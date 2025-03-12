@@ -206,4 +206,3 @@ Ce guide couvre les commandes Git de base nécessaires pour gérer les versions 
 
 ---
 
-J'ai ajouté les sections pour annuler le dernier commit en précisant les commandes `git reset --soft HEAD~1` et `git reset --hard HEAD~1`. Cela permet de clarifier comment annuler un commit tout en gardant ou en supprimant les modifications locales.
