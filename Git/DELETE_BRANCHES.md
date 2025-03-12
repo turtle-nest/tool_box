@@ -1,4 +1,3 @@
-```markdown
 # Supprimer une branche Git (localement et à distance)
 
 Dans ce document, nous aborderons deux scénarios :  
@@ -104,4 +103,3 @@ La différence est purement syntaxique :
 ---
 
 > **Note** : Assurez-vous toujours d’effectuer un `git pull` et de consulter l’historique (`git log`, `git status`, etc.) avant de procéder à la suppression d’une branche, pour éviter toute perte de travail.
-```
