@@ -95,7 +95,78 @@ Content-Type: application/json
     "message": "User deleted successfully"
 }
 ```
+---
 
+Non, la ligne :
+
+```python
+is_admin = db.Column(db.Boolean, default=False)
+```
+
+ne change pas les tests CRUD que tu avais définis précédemment pour les **Users**, **Amenities**, **Places** et **Reviews**. Cependant, voici quelques points à vérifier :
+
+### **Impact sur les Tests CRUD**
+1. **Création d'un utilisateur (POST)**  
+   - Si l’attribut `is_admin` est défini avec une valeur par défaut `False`, alors si tu ne l’inclus pas explicitement dans le `body` de la requête POST, il prendra cette valeur automatiquement.
+   - Si tu veux créer un admin, il faudra ajouter `"is_admin": true` dans le `body`.
+
+   **Exemple de test modifié (optionnel) pour un admin :**
+   ```json
+   {
+       "first_name": "Admin",
+       "last_name": "User",
+       "email": "admin@example.com",
+       "password": "securepassword",
+       "is_admin": true
+   }
+   ```
+
+2. **Lecture d’un utilisateur (GET)**  
+   - L’ajout de `is_admin` à la base de données signifie que si tu veux afficher cet attribut dans la réponse JSON, il faut l'ajouter à la méthode `to_safe_dict()`.
+
+   **Modifie `to_safe_dict()` ainsi :**
+   ```python
+   def to_safe_dict(self):
+       """Return a dictionary without the password field"""
+       return {
+           'id': self.id,
+           'first_name': self.first_name,
+           'last_name': self.last_name,
+           'email': self.email,
+           'is_admin': self.is_admin  # Ajout de cet attribut
+       }
+   ```
+
+   **Réponse attendue après GET :**
+   ```json
+   {
+       "id": 1,
+       "first_name": "John",
+       "last_name": "Doe",
+       "email": "john.doe@example.com",
+       "is_admin": false
+   }
+   ```
+
+3. **Mise à jour d’un utilisateur (PUT)**  
+   - Tu peux maintenant modifier cet attribut si besoin :
+   ```json
+   {
+       "is_admin": true
+   }
+   ```
+   **Réponse attendue après PUT :**
+   ```json
+   {
+       "message": "User updated successfully"
+   }
+   ```
+
+4. **Suppression d’un utilisateur (DELETE)**  
+   - Aucun changement requis ici.
+
+
+🔍 **Vérifie tes tests Postman pour voir si l’attribut `is_admin` est bien géré comme attendu !** 🚀
 ---
 
 
