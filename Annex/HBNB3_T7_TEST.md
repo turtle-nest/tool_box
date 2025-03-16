@@ -1,4 +1,103 @@
-### Tester les opérations CRUD sur les Amenities (amenities)
+# Tester les opérations CRUD sur les Amenities (amenities)
+
+### Tester les opérations CRUD sur les Users (users)
+
+#### a) Créer un utilisateur (POST)  
+**URL** : `http://127.0.0.1:5000/users/`  
+**Méthode** : `POST`  
+**Headers** :  
+```
+Content-Type: application/json
+```
+**Body (JSON)** :
+```json
+{
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "john.doe@example.com",
+    "password": "securepassword"
+}
+```
+**Réponse attendue (201 Created)** :
+```json
+{
+    "id": 1,
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "john.doe@example.com"
+}
+```
+
+---
+
+#### b) Lire la liste des utilisateurs (GET)  
+**URL** : `http://127.0.0.1:5000/users/`  
+**Méthode** : `GET`  
+**Réponse attendue (200 OK)** :
+```json
+[
+    {
+        "id": 1,
+        "first_name": "John",
+        "last_name": "Doe",
+        "email": "john.doe@example.com"
+    }
+]
+```
+
+---
+
+#### c) Lire un utilisateur spécifique (GET)  
+**URL** : `http://127.0.0.1:5000/users/1`  
+**Méthode** : `GET`  
+**Réponse attendue (200 OK)** :
+```json
+{
+    "id": 1,
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "john.doe@example.com"
+}
+```
+
+---
+
+#### d) Mettre à jour un utilisateur (PUT)  
+**URL** : `http://127.0.0.1:5000/users/1`  
+**Méthode** : `PUT`  
+**Headers** :  
+```
+Content-Type: application/json
+```
+**Body (JSON)** :
+```json
+{
+    "first_name": "Jonathan",
+    "last_name": "Doe",
+    "email": "jonathan.doe@example.com"
+}
+```
+**Réponse attendue (200 OK)** :
+```json
+{
+    "message": "User updated successfully"
+}
+```
+
+---
+
+#### e) Supprimer un utilisateur (DELETE)  
+**URL** : `http://127.0.0.1:5000/users/1`  
+**Méthode** : `DELETE`  
+**Réponse attendue (200 OK)** :
+```json
+{
+    "message": "User deleted successfully"
+}
+```
+
+---
+
 
 #### a) Créer un amenity (POST)  
 **URL** : `http://127.0.0.1:5000/amenities/`  
